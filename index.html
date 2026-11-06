@@ -362,6 +362,7 @@ function mountLiquidRipple(host, opts = {}) {
   const palette = o.colors.map(hexToRgb);
   let ci = 0;
   const splat = (x, y, dx, dy, rgb) => {
+    if (!rgb || !Number.isFinite(x) || !Number.isFinite(y) || !Number.isFinite(dx) || !Number.isFinite(dy)) return;
     let u = use('splat', [vel.tx, vel.ty]);
     gl.uniform1i(u.target, vel.read.attach(0)); gl.uniform1f(u.aspect, canvas.width / canvas.height);
     gl.uniform2f(u.point, x, y); gl.uniform3f(u.color, dx, dy, 0); gl.uniform1f(u.radius, o.radius * (canvas.width > canvas.height ? 1 : canvas.height / canvas.width));
@@ -406,14 +407,14 @@ function mountLiquidRipple(host, opts = {}) {
   const autoStep = (now, dt) => {
     if (!o.autoDemo || now - lastMove < o.autoIdleMs) return;
     auto.a += dt * 0.6; const nx = .5 + .32 * Math.cos(auto.a * 0.9), ny = .55 + .22 * Math.sin(auto.a * 1.3);
-    splat(nx, ny, (nx - auto.x) * o.force * .45, (ny - auto.y) * o.force * .45, palette[Math.floor(auto.a) % palette.length]);
+    splat(nx, ny, (nx - auto.x) * o.force * .45, (ny - auto.y) * o.force * .45, palette[((Math.floor(auto.a) % palette.length) + palette.length) % palette.length]);
     auto.x = nx; auto.y = ny;
   };
 
   let raf = 0, visible = true, running = true, prev = performance.now();
   const loop = now => {
     raf = 0; if (!running || !visible || document.hidden) return;
-    const dt = Math.min((now - prev) / 1000, 1 / 30); prev = now;
+    const dt = Math.max(0, Math.min((now - prev) / 1000, 1 / 30)); prev = now;
     resize(); autoStep(now, dt); step(dt); render();
     raf = requestAnimationFrame(loop);
   };
