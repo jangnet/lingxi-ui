@@ -38,7 +38,11 @@
 | `docs/design-language.md` | 语言层规则：四轴性格如何落到具体数值，以及哪些判断必须交给人 |
 | `docs/screenshots/` | 工作台、案例库、设计方法页实拍 |
 
+产品实拍（品牌名已统一为澪汐UI）：设计方法页与案例库页。
+
 ![设计方法](docs/screenshots/methods.png)
+
+![案例与媒体方法](docs/screenshots/cases.png)
 
 ## 快速开始
 
